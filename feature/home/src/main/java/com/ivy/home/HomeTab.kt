@@ -121,6 +121,9 @@ fun BoxWithConstraintsScope.HomeUi(
     }
 
     val baseCurrency = uiState.baseData.baseCurrency
+    val notificationCenterCards = remember(uiState.customerJourneyCards) {
+        uiState.customerJourneyCards.drop(1).toImmutableList()
+    }
 
     Column(
         modifier = modifier
@@ -177,7 +180,7 @@ fun BoxWithConstraintsScope.HomeUi(
             onSelectPreviousMonth = {
                 onEvent(HomeEvent.SelectPreviousMonth)
             },
-            hasNotifications = uiState.customerJourneyCards.drop(1).isNotEmpty(),
+            hasNotifications = notificationCenterCards.isNotEmpty(),
             onOpenNotifications = {
                 notificationCenterVisible = true
             },
@@ -258,7 +261,7 @@ fun BoxWithConstraintsScope.HomeUi(
 
     CustomerJourneyNotificationCenter(
         visible = notificationCenterVisible,
-        customerJourneyCards = uiState.customerJourneyCards.drop(1).toImmutableList(),
+        customerJourneyCards = notificationCenterCards,
         onDismiss = {
             onEvent(HomeEvent.DismissCustomerJourneyCard(it))
         },

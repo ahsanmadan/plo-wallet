@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ivy.base.legacy.Transaction
@@ -27,6 +29,8 @@ import com.ivy.design.l0_system.UI
 import com.ivy.design.l0_system.style
 import com.ivy.legacy.utils.drawColoredShadow
 import com.ivy.legacy.utils.format
+import com.ivy.legacy.utils.shortenAmount
+import com.ivy.legacy.utils.shouldShortAmount
 import com.ivy.ui.R
 import com.ivy.wallet.domain.data.IvyCurrency
 import com.ivy.wallet.ui.theme.Gradient
@@ -53,6 +57,14 @@ fun IncomeExpensesCards(
     expenseHeaderCardClicked: () -> Unit = {},
     onAddTransaction: (TransactionType) -> Unit = {},
 ) {
+    val transactionCounts = remember(history) {
+        val transactions = history.filterIsInstance<Transaction>()
+        TransactionCounts(
+            income = transactions.count { it.type == TransactionType.INCOME },
+            expense = transactions.count { it.type == TransactionType.EXPENSE }
+        )
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -63,9 +75,7 @@ fun IncomeExpensesCards(
             title = stringRes(R.string.income_uppercase),
             currencyCode = currency,
             amount = income,
-            transactionCount = history
-                .filterIsInstance(Transaction::class.java)
-                .count { it.type == TransactionType.INCOME },
+            transactionCount = transactionCounts.income,
             addButtonText = if (hasAddButtons) stringResource(R.string.add_income) else null,
             isIncome = true,
 
@@ -81,9 +91,7 @@ fun IncomeExpensesCards(
             title = stringRes(R.string.expenses_uppercase),
             currencyCode = currency,
             amount = expenses,
-            transactionCount = history
-                .filterIsInstance(Transaction::class.java)
-                .count { it.type == TransactionType.EXPENSE },
+            transactionCount = transactionCounts.expense,
             addButtonText = if (hasAddButtons) stringResource(R.string.add_expense) else null,
             isIncome = false,
 
@@ -96,6 +104,11 @@ fun IncomeExpensesCards(
         Spacer(Modifier.width(16.dp))
     }
 }
+
+private data class TransactionCounts(
+    val income: Int,
+    val expense: Int,
+)
 
 @Composable
 @Suppress("ParameterNaming")
@@ -120,6 +133,11 @@ private fun RowScope.HeaderCard(
     }
 
     val contrastColor = findContrastTextColor(backgroundColor)
+    val amountText = if (shouldShortAmount(amount)) {
+        shortenAmount(amount)
+    } else {
+        amount.format(currencyCode)
+    }
 
     Column(
         modifier = Modifier
@@ -146,11 +164,13 @@ private fun RowScope.HeaderCard(
 
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = amount.format(currencyCode),
+            text = amountText,
             style = UI.typo.nB1.style(
                 color = contrastColor,
                 fontWeight = FontWeight.ExtraBold
-            )
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
@@ -158,7 +178,9 @@ private fun RowScope.HeaderCard(
             style = UI.typo.b2.style(
                 color = contrastColor,
                 fontWeight = FontWeight.Normal
-            )
+            ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
 
         Spacer(Modifier.height(12.dp))
