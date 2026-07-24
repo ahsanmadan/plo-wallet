@@ -381,6 +381,14 @@
     <string name="create_first_planned_payment">Buat pembayaran terencana pertama Anda</string>
     <string name="create_first_planned_payment_description">Automatisasi pelacakan transaksi berulang seperti langganan, sewa, gaji, dll. Tetap unggul dalam keuangan dengan mengetahui berapa banyak yang harus Anda bayar/dapatkan di muka.</string>
     <string name="did_you_know">Tahukah Anda?</string>
+    <string name="home_alert_set_starting_balance">Set your starting balance</string>
+    <string name="home_alert_set_starting_balance_description">Add your current account balance so Plo can show accurate totals.</string>
+    <string name="home_alert_plan_upcoming_payments">Plan upcoming payments</string>
+    <string name="home_alert_plan_upcoming_payments_description">Track recurring bills, subscriptions, and income before they happen.</string>
+    <string name="home_alert_add_transactions_faster">Add transactions faster</string>
+    <string name="home_alert_add_transactions_faster_description">Add income, expenses, or transfers from your home screen with one tap.</string>
+    <string name="home_alert_review_spending_by_category">Review spending by category</string>
+    <string name="home_alert_review_spending_by_category_description">Open the spending chart to see where your money goes this month.</string>
     <string name="widget_description">Plo memiliki widget keren yang memungkinkan Anda menambahkan transaksi PENDAPATAN/PENGELUARAN/PENYALURAN dengan 1 klik dari beranda Anda\n\nCatatan: Jika tombol "Tambah widget" tidak berfungsi, tambahkan secara manual dari menu widget peluncur Anda.</string>
     <string name="add_widget">Tambahkan widget</string>
     <string name="set_a_budget">Tetapkan anggaran</string>

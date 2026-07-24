@@ -77,8 +77,8 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount == 0L
       },
       alertType = PloAlertType.CRITICAL,
-      title = stringRes(R.string.adjust_initial_balance),
-      description = stringRes(R.string.adjust_initial_balance_description),
+      title = stringRes(R.string.home_alert_set_starting_balance),
+      description = stringRes(R.string.home_alert_set_starting_balance_description),
       cta = stringRes(R.string.to_accounts),
       ctaIcon = R.drawable.ic_custom_account_s,
       background = Gradient.solid(Ivy),
@@ -94,8 +94,8 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 1 && plannedPaymentCount == 0L
       },
       alertType = PloAlertType.REMINDER,
-      title = stringRes(R.string.create_first_planned_payment),
-      description = stringRes(R.string.create_first_planned_payment_description),
+      title = stringRes(R.string.home_alert_plan_upcoming_payments),
+      description = stringRes(R.string.home_alert_plan_upcoming_payments_description),
       cta = stringRes(R.string.add_planned_payment),
       ctaIcon = R.drawable.ic_planned_payments,
       background = Gradient.solid(Orange),
@@ -116,8 +116,8 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 3
       },
       alertType = PloAlertType.TIP,
-      title = stringRes(R.string.did_you_know),
-      description = stringRes(R.string.widget_description),
+      title = stringRes(R.string.home_alert_add_transactions_faster),
+      description = stringRes(R.string.home_alert_add_transactions_faster_description),
       cta = stringRes(R.string.add_widget),
       ctaIcon = R.drawable.ic_custom_atom_s,
       background = Gradient.solid(GreenLight),
@@ -133,8 +133,8 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 7
       },
       alertType = PloAlertType.INSIGHT,
-      title = stringRes(R.string.did_you_know),
-      description = stringRes(R.string.you_can_see_a_piechart),
+      title = stringRes(R.string.home_alert_review_spending_by_category),
+      description = stringRes(R.string.home_alert_review_spending_by_category_description),
       cta = stringRes(R.string.expenses_piechart),
       ctaIcon = R.drawable.ic_custom_bills_s,
       background = Gradient.solid(Red),
