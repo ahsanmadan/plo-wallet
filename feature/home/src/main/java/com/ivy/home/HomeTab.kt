@@ -184,6 +184,7 @@ fun BoxWithConstraintsScope.HomeUi(
 
             upcoming = uiState.upcoming,
             overdue = uiState.overdue,
+            buffer = uiState.buffer,
 
             stats = uiState.stats,
             history = uiState.history,
@@ -294,6 +295,7 @@ fun HomeLazyColumn(
 
     upcoming: LegacyDueSection,
     overdue: LegacyDueSection,
+    buffer: BufferInfo,
     balance: BigDecimal,
     stats: IncomeExpensePair,
     history: ImmutableList<TransactionHistoryItem>,
@@ -332,6 +334,21 @@ fun HomeLazyColumn(
     val timeProvider = LocalTimeProvider.current
     val timeConverter = LocalTimeConverter.current
     val timeFormatter = LocalTimeFormatter.current
+    val insightState = remember(
+        history,
+        balance,
+        buffer,
+        upcoming,
+        overdue,
+    ) {
+        ploHomeInsightState(
+            history = history,
+            balance = balance,
+            buffer = buffer,
+            upcoming = upcoming,
+            overdue = overdue,
+        )
+    }
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -354,7 +371,8 @@ fun HomeLazyColumn(
                 onHiddenBalanceClick = onHiddenBalanceClick,
                 percentExpanded = 1f,
                 hideIncome = hideIncome,
-                onHiddenIncomeClick = onHiddenIncomeClick
+                onHiddenIncomeClick = onHiddenIncomeClick,
+                insightState = insightState
             )
         }
         item {

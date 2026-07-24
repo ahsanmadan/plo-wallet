@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ivy.base.model.TransactionType
@@ -55,6 +56,8 @@ import com.ivy.wallet.ui.theme.Gradient
 import com.ivy.wallet.ui.theme.GradientGreen
 import com.ivy.wallet.ui.theme.Gray
 import com.ivy.wallet.ui.theme.Green
+import com.ivy.wallet.ui.theme.Orange
+import com.ivy.wallet.ui.theme.Red
 import com.ivy.wallet.ui.theme.White
 import com.ivy.wallet.ui.theme.components.BalanceRow
 import com.ivy.wallet.ui.theme.components.BalanceRowMini
@@ -224,6 +227,7 @@ fun CashFlowInfo(
     onBalanceClick: () -> Unit,
     percentExpanded: Float,
     onHiddenBalanceClick: () -> Unit,
+    insightState: PloHomeInsightState,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -287,7 +291,251 @@ fun CashFlowInfo(
         } else {
             Spacer(Modifier.height(16.dp))
         }
+
+        PloCashFlowStrip(
+            currency = currency,
+            currentBalance = balance,
+            balanceAfterPlanned = insightState.balanceAfterPlanned,
+            hiddenMode = hideBalance || hideIncome
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        PloHomeInsightCard(
+            currency = currency,
+            insightState = insightState,
+            hiddenMode = hideBalance || hideIncome
+        )
     }
+}
+
+@Composable
+private fun PloCashFlowStrip(
+    currency: String,
+    currentBalance: Double,
+    balanceAfterPlanned: Double,
+    hiddenMode: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .clip(UI.shapes.r4)
+            .background(UI.colors.medium)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PloCashFlowValue(
+            modifier = Modifier.weight(1f),
+            label = stringResource(R.string.plo_home_current_balance),
+            amount = currentBalance,
+            currency = currency,
+            hiddenMode = hiddenMode
+        )
+
+        Spacer(Modifier.width(12.dp))
+
+        PloCashFlowValue(
+            modifier = Modifier.weight(1f),
+            label = stringResource(R.string.plo_home_after_planned),
+            amount = balanceAfterPlanned,
+            currency = currency,
+            hiddenMode = hiddenMode
+        )
+    }
+}
+
+@Composable
+private fun PloCashFlowValue(
+    label: String,
+    amount: Double,
+    currency: String,
+    hiddenMode: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = UI.typo.c.style(
+                color = Gray,
+                fontWeight = FontWeight.Bold,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = if (hiddenMode) {
+                stringResource(R.string.plo_home_hidden_amount)
+            } else {
+                "${amount.format(currency)} $currency"
+            },
+            style = UI.typo.nB2.style(
+                color = UI.colors.pureInverse,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun PloHomeInsightCard(
+    currency: String,
+    insightState: PloHomeInsightState,
+    hiddenMode: Boolean,
+) {
+    val insight = rememberPloHomeInsightText(
+        currency = currency,
+        insightState = insightState,
+        hiddenMode = hiddenMode,
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .clip(UI.shapes.r4)
+            .background(UI.colors.pure)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .width(4.dp)
+                .height(48.dp)
+                .clip(UI.shapes.rFull)
+                .background(insight.color)
+        )
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = insight.title,
+                style = UI.typo.b2.style(
+                    color = UI.colors.pureInverse,
+                    fontWeight = FontWeight.ExtraBold,
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Spacer(Modifier.height(4.dp))
+
+            Text(
+                text = insight.body,
+                style = UI.typo.c.style(
+                    color = Gray,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Start,
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+private fun rememberPloHomeInsightText(
+    currency: String,
+    insightState: PloHomeInsightState,
+    hiddenMode: Boolean,
+): PloHomeInsightText {
+    val hiddenText = stringResource(R.string.plo_home_hidden_amount)
+    return when {
+        !insightState.hasTransactions && !insightState.hasPlannedPayments -> {
+            PloHomeInsightText(
+                title = stringResource(R.string.plo_home_empty_insight_title),
+                body = stringResource(R.string.plo_home_empty_insight_body),
+                color = UI.colors.pureInverse,
+            )
+        }
+
+        insightState.overdueCount > 0 -> {
+            PloHomeInsightText(
+                title = stringResource(
+                    R.string.plo_home_overdue_insight_title,
+                    insightState.overdueCount,
+                ),
+                body = stringResource(
+                    R.string.plo_home_overdue_insight_body,
+                    insightState.overdueAmountLabel(currency, hiddenMode, hiddenText),
+                ),
+                color = Red,
+            )
+        }
+
+        insightState.upcomingCount > 0 -> {
+            PloHomeInsightText(
+                title = stringResource(
+                    R.string.plo_home_upcoming_insight_title,
+                    insightState.upcomingCount,
+                ),
+                body = stringResource(
+                    R.string.plo_home_upcoming_insight_body,
+                    insightState.upcomingAmountLabel(currency, hiddenMode, hiddenText),
+                ),
+                color = Orange,
+            )
+        }
+
+        insightState.hasBufferWarning -> {
+            PloHomeInsightText(
+                title = stringResource(R.string.plo_home_buffer_insight_title),
+                body = stringResource(
+                    R.string.plo_home_buffer_insight_body,
+                    insightState.bufferAmountLabel(currency, hiddenMode, hiddenText),
+                ),
+                color = Orange,
+            )
+        }
+
+        else -> {
+            PloHomeInsightText(
+                title = stringResource(R.string.plo_home_steady_insight_title),
+                body = stringResource(R.string.plo_home_steady_insight_body),
+                color = Green,
+            )
+        }
+    }
+}
+
+private data class PloHomeInsightText(
+    val title: String,
+    val body: String,
+    val color: Color,
+)
+
+private fun PloHomeInsightState.overdueAmountLabel(
+    currency: String,
+    hiddenMode: Boolean,
+    hiddenText: String,
+): String = amountLabel(overdueAmount, currency, hiddenMode, hiddenText)
+
+private fun PloHomeInsightState.upcomingAmountLabel(
+    currency: String,
+    hiddenMode: Boolean,
+    hiddenText: String,
+): String = amountLabel(upcomingAmount, currency, hiddenMode, hiddenText)
+
+private fun PloHomeInsightState.bufferAmountLabel(
+    currency: String,
+    hiddenMode: Boolean,
+    hiddenText: String,
+): String = amountLabel(bufferExceededAmount, currency, hiddenMode, hiddenText)
+
+private fun amountLabel(
+    amount: Double,
+    currency: String,
+    hiddenMode: Boolean,
+    hiddenText: String,
+): String {
+    return if (hiddenMode) hiddenText else "${amount.format(currency)} $currency"
 }
 
 @Composable
