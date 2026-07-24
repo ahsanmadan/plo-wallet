@@ -1,6 +1,6 @@
-# Lilium 🌸
+# Plo
 
-**Lilium** adalah aplikasi pencatat keuangan (*money tracker*) dan pengelola keuangan pribadi yang simpel dan elegan. Proyek ini dikembangkan secara personal untuk memudahkan pemantauan arus kas, anggaran, dan transaksi harian.
+**Plo** adalah aplikasi pencatat keuangan (*money tracker*) dan pengelola keuangan pribadi yang simpel dan elegan. Proyek ini dikembangkan secara personal untuk memudahkan pemantauan arus kas, anggaran, dan transaksi harian.
 
 Aplikasi ini merupakan *fork* dan modifikasi dari proyek open-source [Ivy Wallet](https://github.com/Ivy-Apps/ivy-wallet), yang disesuaikan kembali dengan kebutuhan dan preferensi pribadi.
 
@@ -26,7 +26,7 @@ Aplikasi ini dibangun menggunakan teknologi Android modern:
 1. Pastikan Anda sudah menginstal **Android Studio** versi terbaru.
 2. Clone repositori ini ke komputer Anda:
    ```bash
-   git clone https://github.com/ahsanmadan/Lilium.git
+   git clone https://github.com/ahsanmadan/Plo.git
    ```
 3. Buka proyek hasil *clone* tersebut di Android Studio.
 4. Tunggu proses sinkronisasi Gradle selesai.
@@ -34,4 +34,4 @@ Aplikasi ini dibangun menggunakan teknologi Android modern:
 
 ## 📝 Lisensi
 
-Proyek ini adalah *fork* dari Ivy Wallet yang didistribusikan di bawah lisensi **GPL-3.0**. Modifikasi pada proyek **Lilium** ini dikembangkan untuk penggunaan pribadi. Hak cipta kode asli tetap milik pembuat Ivy Wallet.
+Proyek ini adalah *fork* dari Ivy Wallet yang didistribusikan di bawah lisensi **GPL-3.0**. Modifikasi pada proyek **Plo** ini dikembangkan untuk penggunaan pribadi. Hak cipta kode asli tetap milik pembuat Ivy Wallet.

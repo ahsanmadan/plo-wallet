@@ -176,7 +176,7 @@ fun BoxWithConstraintsScope.OnboardingSplashLogin(
                 },
             painter = painterResource(id = R.drawable.ivy_wallet_logo),
             contentScale = ContentScale.FillBounds,
-            contentDescription = "Ivy Wallet logo"
+            contentDescription = "Plo logo"
         )
 
         Spacer(Modifier.height(marginTextTop))
@@ -186,7 +186,7 @@ fun BoxWithConstraintsScope.OnboardingSplashLogin(
                 ivyContext = ivyContext,
                 percentTransition = percentTransition
             ),
-            text = "Ivy Wallet",
+            text = "Plo",
             style = UI.typo.h2.style(
                 color = UI.colors.pureInverse,
                 fontWeight = FontWeight.ExtraBold
@@ -204,28 +204,6 @@ fun BoxWithConstraintsScope.OnboardingSplashLogin(
             style = UI.typo.b2.style(
                 color = UI.colors.pureInverse,
                 fontWeight = FontWeight.SemiBold
-            )
-        )
-
-        val uriHandler = LocalUriHandler.current
-        Text(
-            modifier = Modifier
-                .animateXCenterToLeft(
-                    ivyContext = ivyContext,
-                    percentTransition = percentTransition
-                )
-                .clickable {
-                    openUrl(
-                        uriHandler = uriHandler,
-                        url = Constants.URL_IVY_WALLET_REPO
-                    )
-                }
-                .padding(vertical = 8.dp)
-                .padding(end = 8.dp),
-            text = stringResource(R.string.opensource),
-            style = UI.typo.c.style(
-                color = Green,
-                fontWeight = FontWeight.Bold
             )
         )
 

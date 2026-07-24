@@ -59,7 +59,7 @@ class DisclaimerViewModel @Inject constructor(
         // LEGAL text - do NOT extract or translate
         val LegalCheckboxes = listOf(
             CheckboxViewState(
-                text = "I recognize this app is open-source and provided 'as-is' " +
+                text = "I recognize Plo is provided 'as-is' " +
                         "with no warranties, explicit or implied. " +
                         "I fully accept all risks of errors, defects, or failures, " +
                         "using the app solely at my own risk.",

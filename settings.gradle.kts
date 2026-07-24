@@ -10,7 +10,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "IvyWallet"
+rootProject.name = "Plo"
 include(":app")
 include(":ci-actions:base")
 include(":ci-actions:compose-stability")

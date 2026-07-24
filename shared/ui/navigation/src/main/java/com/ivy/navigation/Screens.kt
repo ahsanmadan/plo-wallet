@@ -142,6 +142,10 @@ data object ContributorsScreen : Screen
 
 data object ReleasesScreen : Screen
 
+data object TermsAndConditionsScreen : Screen
+
+data object PrivacyPolicyScreen : Screen
+
 data object DisclaimerScreen : Screen
 
 data object PollScreen : Screen

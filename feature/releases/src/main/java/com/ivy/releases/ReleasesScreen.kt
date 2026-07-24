@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,36 +22,22 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivy.navigation.navigation
 import com.ivy.ui.R
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ReleasesScreenImpl() {
-    val viewModel: ReleasesViewModel = viewModel()
-    val uiState = viewModel.uiState()
-
-    ReleasesUi(
-        uiState = uiState,
-        onEvent = {
-            viewModel.onEvent(it)
-        }
-    )
+    ReleasesUi()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ReleasesUi(
-    uiState: ReleasesState,
-    onEvent: (ReleasesEvent) -> Unit
-) {
-    val browser = LocalUriHandler.current
+private fun ReleasesUi() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -65,11 +48,6 @@ private fun ReleasesUi(
                     BackButton()
                 }
             )
-        },
-        floatingActionButton = {
-            GitHubButton {
-                browser.openUri("https://github.com/Ivy-Apps/ivy-wallet")
-            }
         }
     ) { innerPadding ->
         LazyColumn(
@@ -77,10 +55,9 @@ private fun ReleasesUi(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = innerPadding,
         ) {
-            content(
-                releasesState = uiState,
-                onEvent = onEvent
-            )
+            items(localPloReleases()) {
+                ReleaseInfoCard(releaseInfo = it)
+            }
         }
     }
 }
@@ -108,49 +85,15 @@ private fun BackButton() {
     }
 }
 
-private fun LazyListScope.content(
-    releasesState: ReleasesState,
-    onEvent: (ReleasesEvent) -> Unit
-) {
-    when (releasesState) {
-        is ReleasesState.Error -> {
-            item {
-                ReleasesErrorState(
-                    message = releasesState.errorMessage,
-                    onClick = {
-                        onEvent(ReleasesEvent.OnTryAgainClick)
-                    }
-                )
-            }
-        }
-
-        is ReleasesState.Loading -> {
-            item {
-                Text(text = releasesState.loadingMessage)
-            }
-        }
-
-        is ReleasesState.Success -> {
-            items(releasesState.releasesInfo) {
-                ReleaseInfoCard(releaseInfo = it)
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReleaseInfoCard(
     releaseInfo: ReleaseInfo,
     modifier: Modifier = Modifier
 ) {
-    val browser = LocalUriHandler.current
-
     OutlinedCard(
         modifier = modifier,
-        onClick = {
-            browser.openUri(releaseInfo.releaseUrl)
-        }
+        onClick = {}
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             ReleaseInfoRow(releaseInfo = releaseInfo)
@@ -208,44 +151,24 @@ private fun ReleaseDate(
     )
 }
 
-@Composable
-private fun ReleasesErrorState(
-    message: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.error
+private fun localPloReleases() = persistentListOf(
+    ReleaseInfo(
+        releaseName = "Plo Rebrand Cleanup",
+        releaseUrl = "",
+        releaseDate = "2026.07.24",
+        releaseCommits = persistentListOf(
+            "Updated visible app branding to Plo.",
+            "Removed legacy community and repository promotional links.",
+            "Added local Terms & Conditions and Privacy Policy screens."
         )
-        ElevatedButton(
-            onClick = onClick
-        ) {
-            Text(text = stringResource(R.string.try_again))
-        }
-    }
-}
-
-@Composable
-private fun GitHubButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    FloatingActionButton(
-        modifier = modifier,
-        onClick = onClick,
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.github_logo),
-            contentDescription = "GitHub"
+    ),
+    ReleaseInfo(
+        releaseName = "Personal Finance Core",
+        releaseUrl = "",
+        releaseDate = "2026.07.17",
+        releaseCommits = persistentListOf(
+            "Kept the stable finance tracking foundation.",
+            "Preserved local data, accounts, budgets, reports, loans, and planned payments."
         )
-    }
-}
+    )
+)

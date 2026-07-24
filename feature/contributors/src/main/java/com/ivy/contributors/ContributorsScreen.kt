@@ -1,5 +1,6 @@
 package com.ivy.contributors
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,29 +13,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,20 +42,14 @@ import coil.compose.AsyncImage
 import com.ivy.navigation.IvyPreview
 import com.ivy.navigation.Navigation
 import com.ivy.navigation.navigation
-import com.ivy.navigation.screenScopedViewModel
 import com.ivy.ui.R
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ContributorsScreenImpl() {
-    val viewModel: ContributorsViewModel = screenScopedViewModel()
-    val uiState = viewModel.uiState()
-
     ContributorsUi(
-        uiState = uiState,
-        onEvent = {
-            viewModel.onEvent(it)
-        }
+        uiState = localPloContributorsState(),
+        onEvent = {}
     )
 }
 
@@ -69,23 +60,12 @@ private fun ContributorsUi(
     onEvent: (ContributorsEvent) -> Unit
 ) {
     val nav = navigation()
-    val browser = LocalUriHandler.current
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     TopAppBarTitle(
-                        title = when (uiState.contributorsResponse) {
-                            is ContributorsResponse.Error, ContributorsResponse.Loading ->
-                                stringResource(R.string.project_contributors)
-
-                            is ContributorsResponse.Success ->
-                                stringResource(
-                                    R.string.contributors_number,
-                                    uiState.contributorsResponse.contributors.size
-                                )
-                        }
+                        title = stringResource(R.string.project_contributors)
                     )
                 },
                 navigationIcon = {
@@ -101,11 +81,6 @@ private fun ContributorsUi(
                     onEvent(contributorsEvent)
                 }
             )
-        },
-        floatingActionButton = {
-            GitHubButton {
-                browser.openUri("https://github.com/Ivy-Apps/ivy-wallet")
-            }
         }
     )
 }
@@ -169,87 +144,10 @@ private fun LazyListScope.content(
         }
 
         is ContributorsResponse.Success -> {
-            item(key = "Project info") {
-                ProjectInfoContent(contributorsState = contributorsState)
-            }
-
             items(contributorsState.contributorsResponse.contributors) {
                 ContributorCard(contributor = it)
             }
         }
-    }
-}
-
-@Composable
-private fun ProjectInfoContent(contributorsState: ContributorsState) {
-    when (contributorsState.projectResponse) {
-        ProjectResponse.Error,
-        ProjectResponse.Loading -> {
-            // show nothing
-        }
-
-        is ProjectResponse.Success -> ProjectInfoRow(
-            projectRepositoryInfo = contributorsState.projectResponse
-        )
-    }
-}
-
-@Composable
-private fun ProjectInfoRow(
-    projectRepositoryInfo: ProjectResponse.Success,
-    modifier: Modifier = Modifier
-) {
-    val browser = LocalUriHandler.current
-
-    Row(modifier = modifier.fillMaxWidth()) {
-        ProjectInfoButton(
-            icon = {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_vue_dev_hierarchy),
-                    contentDescription = "Forks"
-                )
-            },
-            info = "${projectRepositoryInfo.projectInfo.forks} forks",
-            onClick = {
-                browser.openUri("https://github.com/Ivy-Apps/ivy-wallet/fork")
-            }
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        ProjectInfoButton(
-            icon = {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = "Stars"
-                )
-            },
-            info = "${projectRepositoryInfo.projectInfo.stars} stars",
-            onClick = {
-                browser.openUri(projectRepositoryInfo.projectInfo.url)
-            }
-        )
-    }
-}
-
-@Composable
-private fun ProjectInfoButton(
-    icon: @Composable () -> Unit,
-    info: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    OutlinedButton(
-        modifier = modifier,
-        onClick = onClick
-    ) {
-        icon()
-
-        Spacer(modifier = Modifier.width(4.dp))
-
-        Text(info)
     }
 }
 
@@ -288,33 +186,44 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContributorCard(contributor: Contributor) {
-    val browser = LocalUriHandler.current
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        onClick = {
-            if (contributor.githubProfileUrl.isNotBlank()) {
-                browser.openUri(contributor.githubProfileUrl)
-            }
-        }
+        onClick = {}
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .size(72.dp)
-                    .border(
-                        border = BorderStroke(
-                            width = 0.5.dp,
-                            color = MaterialTheme.colorScheme.outlineVariant
+            if (contributor.photoUrl == LOCAL_AHSAN_PHOTO) {
+                Image(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .border(
+                            border = BorderStroke(
+                                width = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            ),
+                            shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
                         ),
-                        shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
-                    ),
-                model = contributor.photoUrl,
-                contentDescription = null
-            )
+                    painter = painterResource(id = R.drawable.ahsan_ramadan),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
+                )
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .border(
+                            border = BorderStroke(
+                                width = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            ),
+                            shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
+                        ),
+                    model = contributor.photoUrl,
+                    contentDescription = null
+                )
+            }
 
             Column(
                 modifier = Modifier.padding(horizontal = 12.dp)
@@ -326,13 +235,7 @@ private fun ContributorCard(contributor: Contributor) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = when (contributor.contributionsCount.toInt()) {
-                        1 -> stringResource(R.string.one_contribution)
-                        else -> stringResource(
-                            R.string.contributions_number,
-                            contributor.contributionsCount
-                        )
-                    },
+                    text = "Plo maintainer",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -340,48 +243,28 @@ private fun ContributorCard(contributor: Contributor) {
     }
 }
 
-@Composable
-private fun GitHubButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    FloatingActionButton(
-        modifier = modifier,
-        onClick = onClick,
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.github_logo),
-            contentDescription = "GitHub"
+private const val LOCAL_AHSAN_PHOTO = "local:ahsan_ramadan"
+
+private fun localPloContributorsState() = ContributorsState(
+    projectResponse = ProjectResponse.Error,
+    contributorsResponse = ContributorsResponse.Success(
+        contributors = persistentListOf(
+            Contributor(
+                name = "Ahsan Ramadan",
+                photoUrl = LOCAL_AHSAN_PHOTO,
+                contributionsCount = "1",
+                githubProfileUrl = ""
+            )
         )
-    }
-}
+    )
+)
 
 @Preview
 @Composable
 private fun PreviewSuccess(isDark: Boolean = false) {
     IvyPreview(isDark) {
         ContributorsUi(
-            uiState = ContributorsState(
-                projectResponse = ProjectResponse.Success(
-                    projectInfo = ProjectRepositoryInfo(
-                        forks = "259",
-                        stars = "1524",
-                        url = ""
-                    )
-                ),
-                contributorsResponse = ContributorsResponse.Success(
-                    contributors = persistentListOf(
-                        Contributor(
-                            name = "Iliyan",
-                            photoUrl = "",
-                            contributionsCount = "567",
-                            githubProfileUrl = ""
-                        )
-                    )
-                )
-            ),
+            uiState = localPloContributorsState(),
             onEvent = {}
         )
     }
