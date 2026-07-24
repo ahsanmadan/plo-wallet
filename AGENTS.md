@@ -61,3 +61,12 @@ This is the master checklist for the AI. Mark `[x]` for completed tasks.
 - [ ] Task 7: Apply full Linear-inspired animations and micro-interactions.
 - [ ] Task 8: Run full UI validation using screenshot/device checks where applicable.
 - [ ] Task 9: Trigger `yeet` skill to publish final release branch to GitHub when explicitly requested.
+
+---
+
+## 5. GitHub Management Workflow
+- Follow the project workflow in `GITHUB_WORKFLOW.md` for branch naming, commits, Pull Requests, releases, and push rules.
+- Default branch is `main`; prefer feature/fix branches for non-trivial work.
+- Use concise conventional commits such as `feat(settings): add legal screens` or `fix(home): preserve scroll position`.
+- Before push, run `git status --short --branch`, `git diff --check`, and the relevant Gradle build/test command.
+- Push directly to `main` only when the user explicitly asks for it or the change is already approved for direct publish.
