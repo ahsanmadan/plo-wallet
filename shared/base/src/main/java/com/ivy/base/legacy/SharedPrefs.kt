@@ -29,6 +29,7 @@ class SharedPrefs @Inject constructor(
 
         // -------------------------------- Customer Journey ----------------------------------------
         const val _CARD_DISMISSED = "_cj_dismissed"
+        const val _CARD_SNOOZED_UNTIL = "_cj_snoozed_until"
         // -------------------------------- Customer Journey ----------------------------------------
 
         // ----------------------------- Others -----------------------------------------------

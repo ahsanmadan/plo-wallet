@@ -47,6 +47,7 @@ fun LazyListScope.transactions(
 
     emptyStateTitle: String = stringRes(R.string.no_transactions),
     emptyStateText: String,
+    EmptyStateActions: @Composable LazyItemScope.() -> Unit = {},
 
     dateDividerMarginTop: Dp? = null,
     lastItemSpacer: Dp? = null,
@@ -94,7 +95,8 @@ fun LazyListScope.transactions(
         item {
             NoTransactionsEmptyState(
                 emptyStateTitle = emptyStateTitle,
-                emptyStateText = emptyStateText
+                emptyStateText = emptyStateText,
+                EmptyStateActions = EmptyStateActions,
             )
         }
     }
@@ -307,6 +309,7 @@ private fun onTransactionClick(
 private fun LazyItemScope.NoTransactionsEmptyState(
     emptyStateTitle: String,
     emptyStateText: String,
+    EmptyStateActions: @Composable LazyItemScope.() -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -340,6 +343,10 @@ private fun LazyItemScope.NoTransactionsEmptyState(
                 textAlign = TextAlign.Center
             )
         )
+
+        Spacer(Modifier.height(20.dp))
+
+        EmptyStateActions()
 
         Spacer(Modifier.height(96.dp))
     }

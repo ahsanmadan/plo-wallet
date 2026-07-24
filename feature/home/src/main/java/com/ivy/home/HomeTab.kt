@@ -2,40 +2,55 @@ package com.ivy.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivy.base.legacy.Theme
 import com.ivy.base.legacy.Transaction
 import com.ivy.base.legacy.TransactionHistoryItem
 import com.ivy.base.legacy.stringRes
+import com.ivy.base.model.TransactionType
 import com.ivy.design.api.LocalTimeConverter
 import com.ivy.design.api.LocalTimeFormatter
 import com.ivy.design.api.LocalTimeProvider
+import com.ivy.design.l0_system.UI
+import com.ivy.design.l0_system.style
 import com.ivy.frp.forward
 import com.ivy.frp.then2
 import com.ivy.home.Constants.SWIPE_HORIZONTAL_THRESHOLD
 import com.ivy.home.customerjourney.CustomerJourney
 import com.ivy.home.customerjourney.CustomerJourneyCardModel
+import com.ivy.home.customerjourney.CustomerJourneyNotificationCenter
 import com.ivy.legacy.IvyWalletPreview
 import com.ivy.legacy.data.AppBaseData
 import com.ivy.legacy.data.BufferInfo
@@ -49,7 +64,10 @@ import com.ivy.legacy.ui.component.transaction.transactions
 import com.ivy.legacy.utils.horizontalSwipeListener
 import com.ivy.legacy.utils.rememberSwipeListenerState
 import com.ivy.legacy.utils.verticalSwipeListener
+import com.ivy.navigation.CategoriesScreen
+import com.ivy.navigation.EditTransactionScreen
 import com.ivy.navigation.IvyPreview
+import com.ivy.navigation.navigation
 import com.ivy.navigation.screenScopedViewModel
 import com.ivy.ui.R
 import com.ivy.ui.rememberScrollPositionListState
@@ -61,8 +79,10 @@ import com.ivy.wallet.ui.theme.modal.ChoosePeriodModal
 import com.ivy.wallet.ui.theme.modal.ChoosePeriodModalData
 import com.ivy.wallet.ui.theme.modal.CurrencyModal
 import com.ivy.wallet.ui.theme.modal.DeleteModal
+import com.ivy.wallet.ui.theme.components.IvyIcon
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import java.math.BigDecimal
 
 @ExperimentalAnimationApi
@@ -85,6 +105,7 @@ fun BoxWithConstraintsScope.HomeUi(
     modifier: Modifier = Modifier,
 ) {
     val ivyContext = ivyWalletCtx()
+    val nav = navigation()
 
     var bufferModalData: BufferModalData? by remember { mutableStateOf(null) }
     var currencyModalVisible by remember { mutableStateOf(false) }
@@ -93,6 +114,7 @@ fun BoxWithConstraintsScope.HomeUi(
     }
     var moreMenuExpanded by remember { mutableStateOf(ivyContext.moreMenuExpanded) }
     var skipAllModalVisible by remember { mutableStateOf(false) }
+    var notificationCenterVisible by remember { mutableStateOf(false) }
     val setMoreMenuExpanded = { expanded: Boolean ->
         moreMenuExpanded = expanded
         ivyContext.setMoreMenuExpanded(expanded)
@@ -154,7 +176,11 @@ fun BoxWithConstraintsScope.HomeUi(
             },
             onSelectPreviousMonth = {
                 onEvent(HomeEvent.SelectPreviousMonth)
-            }
+            },
+            hasNotifications = uiState.customerJourneyCards.drop(1).isNotEmpty(),
+            onOpenNotifications = {
+                notificationCenterVisible = true
+            },
         )
 
         HomeLazyColumn(
@@ -198,6 +224,9 @@ fun BoxWithConstraintsScope.HomeUi(
             onDismiss = forward<CustomerJourneyCardModel>() then2 {
                 HomeEvent.DismissCustomerJourneyCard(it)
             } then2 onEvent,
+            onSnooze = forward<CustomerJourneyCardModel>() then2 {
+                HomeEvent.SnoozeCustomerJourneyCard(it)
+            } then2 onEvent,
             onSkipTransaction = forward<Transaction>() then2 {
                 HomeEvent.SkipPlanned(it)
             } then2 onEvent,
@@ -209,9 +238,37 @@ fun BoxWithConstraintsScope.HomeUi(
             } then2 onEvent,
             onSkipAllTransactions = {
                 skipAllModalVisible = true
+            },
+            onSetStartingBalance = {
+                ivyContext.selectMainTab(MainTab.ACCOUNTS)
+            },
+            onAddFirstTransaction = {
+                nav.navigateTo(
+                    EditTransactionScreen(
+                        initialTransactionId = null,
+                        type = TransactionType.EXPENSE
+                    )
+                )
+            },
+            onCreateMainCategories = {
+                nav.navigateTo(CategoriesScreen)
             }
         )
     }
+
+    CustomerJourneyNotificationCenter(
+        visible = notificationCenterVisible,
+        customerJourneyCards = uiState.customerJourneyCards.drop(1).toImmutableList(),
+        onDismiss = {
+            onEvent(HomeEvent.DismissCustomerJourneyCard(it))
+        },
+        onSnooze = {
+            onEvent(HomeEvent.SnoozeCustomerJourneyCard(it))
+        },
+        onClose = {
+            notificationCenterVisible = false
+        },
+    )
 
     MoreMenu(
         expanded = moreMenuExpanded,
@@ -310,10 +367,14 @@ fun HomeLazyColumn(
 
     onPayOrGet: (Transaction) -> Unit,
     onDismiss: (CustomerJourneyCardModel) -> Unit,
+    onSnooze: (CustomerJourneyCardModel) -> Unit,
     onHiddenBalanceClick: () -> Unit,
     onHiddenIncomeClick: () -> Unit,
     onSkipTransaction: (Transaction) -> Unit,
     onSkipAllTransactions: (List<Transaction>) -> Unit,
+    onSetStartingBalance: () -> Unit,
+    onAddFirstTransaction: () -> Unit,
+    onCreateMainCategories: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val ivyContext = ivyWalletCtx()
@@ -378,7 +439,8 @@ fun HomeLazyColumn(
         item {
             CustomerJourney(
                 customerJourneyCards = customerJourneyCards,
-                onDismiss = onDismiss
+                onDismiss = onDismiss,
+                onSnooze = onSnooze,
             )
         }
 
@@ -406,9 +468,85 @@ fun HomeLazyColumn(
                     timeFormatter = timeFormatter,
                 )
             ),
+            EmptyStateActions = {
+                PloHomeEmptyStateActions(
+                    onSetStartingBalance = onSetStartingBalance,
+                    onAddFirstTransaction = onAddFirstTransaction,
+                    onCreateMainCategories = onCreateMainCategories,
+                )
+            },
             shouldShowAccountSpecificColorInTransactions = shouldShowAccountSpecificColorInTransactions,
             onSkipTransaction = onSkipTransaction,
             onSkipAllTransactions = onSkipAllTransactions
+        )
+    }
+}
+
+@Composable
+private fun PloHomeEmptyStateActions(
+    onSetStartingBalance: () -> Unit,
+    onAddFirstTransaction: () -> Unit,
+    onCreateMainCategories: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+    ) {
+        PloEmptyStateAction(
+            icon = R.drawable.ic_custom_account_s,
+            title = stringResource(R.string.plo_empty_set_starting_balance),
+            onClick = onSetStartingBalance,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        PloEmptyStateAction(
+            icon = R.drawable.ic_add,
+            title = stringResource(R.string.plo_empty_add_first_transaction),
+            onClick = onAddFirstTransaction,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        PloEmptyStateAction(
+            icon = R.drawable.ic_custom_category_s,
+            title = stringResource(R.string.plo_empty_create_main_categories),
+            onClick = onCreateMainCategories,
+        )
+    }
+}
+
+@Composable
+private fun PloEmptyStateAction(
+    icon: Int,
+    title: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(UI.shapes.r4)
+            .background(UI.colors.medium)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IvyIcon(
+            icon = icon,
+            tint = UI.colors.pureInverse,
+        )
+
+        Spacer(Modifier.width(10.dp))
+
+        Text(
+            text = title,
+            style = UI.typo.b2.style(
+                color = UI.colors.pureInverse,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

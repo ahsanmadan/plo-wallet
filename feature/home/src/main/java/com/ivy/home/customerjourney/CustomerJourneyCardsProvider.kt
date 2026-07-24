@@ -46,7 +46,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
           plannedPaymentsCount,
           ivyContext,
           deps
-        ) && !isCardDismissed(it)
+        ) && !isCardDismissed(it) && !isCardSnoozed(it)
       }
       .sortedByDescending { it.alertType.priority }
   }
@@ -59,11 +59,29 @@ class CustomerJourneyCardsProvider @Inject constructor(
     sharedPrefs.putBoolean(sharedPrefsKey(cardData), true)
   }
 
+  fun snoozeCard(cardData: CustomerJourneyCardModel) {
+    sharedPrefs.putLong(
+      snoozeSharedPrefsKey(cardData),
+      timeProvider.utcNow().toEpochMilli() + SNOOZE_DURATION_MS
+    )
+  }
+
+  private fun isCardSnoozed(cardData: CustomerJourneyCardModel): Boolean {
+    val snoozedUntil = sharedPrefs.getLong(snoozeSharedPrefsKey(cardData), 0L)
+    return snoozedUntil > timeProvider.utcNow().toEpochMilli()
+  }
+
   private fun sharedPrefsKey(cardData: CustomerJourneyCardModel): String {
     return "${cardData.id}${SharedPrefs._CARD_DISMISSED}"
   }
 
+  private fun snoozeSharedPrefsKey(cardData: CustomerJourneyCardModel): String {
+    return "${cardData.id}${SharedPrefs._CARD_SNOOZED_UNTIL}"
+  }
+
   companion object {
+    private const val SNOOZE_DURATION_MS = 7L * 24L * 60L * 60L * 1000L
+
     val ACTIVE_CARDS = listOf(
       adjustBalanceCard(),
       addPlannedPaymentCard(),

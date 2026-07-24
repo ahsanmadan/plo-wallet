@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import com.ivy.design.api.LocalTimeConverter
 import com.ivy.design.api.LocalTimeFormatter
 import com.ivy.design.api.LocalTimeProvider
 import com.ivy.design.l0_system.UI
+import com.ivy.design.l0_system.Ivy
 import com.ivy.design.l0_system.style
 import com.ivy.design.utils.thenIf
 import com.ivy.legacy.data.model.TimePeriod
@@ -80,6 +82,8 @@ internal fun HomeHeader(
     hideBalance: Boolean,
     onHiddenBalanceClick: () -> Unit,
     onSelectPreviousMonth: () -> Unit,
+    hasNotifications: Boolean,
+    onOpenNotifications: () -> Unit,
 ) {
     Column {
         val percentExpanded by animateFloatAsState(
@@ -105,6 +109,8 @@ internal fun HomeHeader(
             onHiddenBalanceClick = onHiddenBalanceClick,
             onSelectNextMonth = onSelectNextMonth,
             onSelectPreviousMonth = onSelectPreviousMonth,
+            hasNotifications = hasNotifications,
+            onOpenNotifications = onOpenNotifications,
         )
 
         Spacer(Modifier.height(16.dp))
@@ -131,6 +137,8 @@ private fun HeaderStickyRow(
     hideBalance: Boolean,
     onHiddenBalanceClick: () -> Unit,
     onSelectPreviousMonth: () -> Unit,
+    hasNotifications: Boolean,
+    onOpenNotifications: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -209,7 +217,41 @@ private fun HeaderStickyRow(
 
         Spacer(Modifier.width(12.dp))
 
-        Spacer(Modifier.width(40.dp)) // settings menu button spacer
+        NotificationButton(
+            hasNotifications = hasNotifications,
+            onClick = onOpenNotifications,
+        )
+    }
+}
+
+@Composable
+private fun NotificationButton(
+    hasNotifications: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(UI.shapes.rFull)
+            .background(UI.colors.medium)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        IvyIcon(
+            icon = R.drawable.ic_notification,
+            tint = UI.colors.pureInverse,
+        )
+
+        if (hasNotifications) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .size(8.dp)
+                    .clip(UI.shapes.rFull)
+                    .background(Ivy),
+            )
+        }
     }
 }
 

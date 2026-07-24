@@ -251,6 +251,7 @@ class HomeViewModel @Inject constructor(
                 is HomeEvent.SetCurrency -> setCurrency(event.currency).fixUnit()
                 HomeEvent.SwitchTheme -> switchTheme()
                 is HomeEvent.DismissCustomerJourneyCard -> dismissCustomerJourneyCard(event.card)
+                is HomeEvent.SnoozeCustomerJourneyCard -> snoozeCustomerJourneyCard(event.card)
                 is HomeEvent.SetExpanded -> setExpanded(event.expanded)
             }
         }
@@ -505,6 +506,12 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun dismissCustomerJourneyCard(card: CustomerJourneyCardModel) = suspend {
         customerJourneyLogic.dismissCard(card)
+    } thenInvokeAfter {
+        reload()
+    }
+
+    private suspend fun snoozeCustomerJourneyCard(card: CustomerJourneyCardModel) = suspend {
+        customerJourneyLogic.snoozeCard(card)
     } thenInvokeAfter {
         reload()
     }

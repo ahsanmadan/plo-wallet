@@ -405,6 +405,14 @@
     <string name="home_alert_add_transactions_faster_description">Add income, expenses, or transfers from your home screen with one tap.</string>
     <string name="home_alert_review_spending_by_category">Review spending by category</string>
     <string name="home_alert_review_spending_by_category_description">Open the spending chart to see where your money goes this month.</string>
+    <string name="plo_notification_center_title">Notification Center</string>
+    <string name="plo_notification_center_empty_title">No other alerts</string>
+    <string name="plo_notification_center_empty_body">You\'re all caught up for now.</string>
+    <string name="plo_alert_later">Later</string>
+    <string name="plo_alert_dismiss">Dismiss</string>
+    <string name="plo_empty_set_starting_balance">Set your starting balance</string>
+    <string name="plo_empty_add_first_transaction">Add first transaction</string>
+    <string name="plo_empty_create_main_categories">Create main categories</string>
     <string name="widget_description">Plo offers a convenient widget that allows you to add transactions with just one tap from your home screen.\n\nNote: If the "Add widget" button isn\’t working, please add it manually from your launcher\’s widgets menu.</string>
     <string name="add_widget">Add widget</string>
     <string name="set_a_budget">Set a budget</string>
