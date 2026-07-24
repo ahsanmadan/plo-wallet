@@ -376,16 +376,16 @@ fun HomeLazyColumn(
             )
         }
         item {
-            Spacer(Modifier.height(16.dp))
-
-            TransactionsDividerLine()
-        }
-
-        item {
             CustomerJourney(
                 customerJourneyCards = customerJourneyCards,
                 onDismiss = onDismiss
             )
+        }
+
+        item {
+            Spacer(Modifier.height(16.dp))
+
+            TransactionsDividerLine()
         }
 
         transactions(
