@@ -50,7 +50,10 @@ $env:Path="$env:JAVA_HOME\bin;$env:Path"
 - [Agent Instructions](AGENTS.md)
 - [Design System](DESIGN.md)
 - [GitHub Workflow](GITHUB_WORKFLOW.md)
+- [License Notice](NOTICE.md)
 
 ## License
 
-This project is distributed under the GPL-3.0 license. See [LICENSE](LICENSE) for details.
+This project is distributed under the GPL-3.0 license. See [LICENSE](LICENSE) for the full license text and [NOTICE.md](NOTICE.md) for the project notice.
+
+If you distribute Plo as an APK or another binary build, keep the source code available under GPL-3.0 and preserve the same license terms for recipients.
