@@ -48,6 +48,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
           deps
         ) && !isCardDismissed(it)
       }
+      .sortedByDescending { it.alertType.priority }
   }
 
   private fun isCardDismissed(cardData: CustomerJourneyCardModel): Boolean {
@@ -75,6 +76,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
       condition = { trnCount, _, _, _ ->
         trnCount == 0L
       },
+      alertType = PloAlertType.CRITICAL,
       title = stringRes(R.string.adjust_initial_balance),
       description = stringRes(R.string.adjust_initial_balance_description),
       cta = stringRes(R.string.to_accounts),
@@ -91,6 +93,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
       condition = { trnCount, plannedPaymentCount, _, _ ->
         trnCount >= 1 && plannedPaymentCount == 0L
       },
+      alertType = PloAlertType.REMINDER,
       title = stringRes(R.string.create_first_planned_payment),
       description = stringRes(R.string.create_first_planned_payment_description),
       cta = stringRes(R.string.add_planned_payment),
@@ -112,6 +115,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
       condition = { trnCount, _, _, _ ->
         trnCount >= 3
       },
+      alertType = PloAlertType.TIP,
       title = stringRes(R.string.did_you_know),
       description = stringRes(R.string.widget_description),
       cta = stringRes(R.string.add_widget),
@@ -128,6 +132,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
       condition = { trnCount, _, _, _ ->
         trnCount >= 7
       },
+      alertType = PloAlertType.INSIGHT,
       title = stringRes(R.string.did_you_know),
       description = stringRes(R.string.you_can_see_a_piechart),
       cta = stringRes(R.string.expenses_piechart),

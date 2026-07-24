@@ -24,6 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ivy.design.l0_system.GreenLight
+import com.ivy.design.l0_system.Ivy
+import com.ivy.design.l0_system.Orange
+import com.ivy.design.l0_system.Red
 import com.ivy.design.l0_system.UI
 import com.ivy.design.l0_system.style
 import com.ivy.domain.RootScreen
@@ -73,7 +77,7 @@ fun CompactCustomerJourneyCard(
     modifier: Modifier = Modifier,
     onCTA: () -> Unit,
 ) {
-    val accentColor = cardData.background.startColor
+    val accentColor = cardData.alertType.accentColor()
 
     Row(
         modifier = modifier
@@ -189,6 +193,15 @@ private fun CompactCustomerJourneyAction(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+    }
+}
+
+private fun PloAlertType.accentColor(): Color {
+    return when (this) {
+        PloAlertType.CRITICAL -> Red
+        PloAlertType.REMINDER -> Orange
+        PloAlertType.INSIGHT -> Ivy
+        PloAlertType.TIP -> GreenLight
     }
 }
 

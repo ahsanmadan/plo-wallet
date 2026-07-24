@@ -14,6 +14,7 @@ data class CustomerJourneyCardModel(
     val id: String,
     @Suppress("MaximumLineLength", "ParameterWrapping", "MaxLineLength", "ParameterListWrapping")
     val condition: suspend (trnCount: Long, plannedPaymentsCount: Long, ivyContext: IvyWalletCtx, deps: CustomerJourneyDeps) -> Boolean,
+    val alertType: PloAlertType = PloAlertType.TIP,
     val title: String,
     val description: String,
     val cta: String?,
@@ -30,3 +31,10 @@ data class CustomerJourneyDeps(
     val pollRepository: PollRepository,
     val timeProvider: TimeProvider,
 )
+
+enum class PloAlertType(val priority: Int) {
+    CRITICAL(4),
+    REMINDER(3),
+    INSIGHT(2),
+    TIP(1),
+}
