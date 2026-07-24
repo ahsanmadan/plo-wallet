@@ -90,6 +90,9 @@ fun BoxWithConstraintsScope.SettingsScreen() {
         },
         lockApp = uiState.lockApp,
         showNotifications = uiState.showNotifications,
+        showHelpfulTips = uiState.showHelpfulTips,
+        showBudgetWarnings = uiState.showBudgetWarnings,
+        showPlannedPaymentReminders = uiState.showPlannedPaymentReminders,
         hideCurrentBalance = uiState.hideCurrentBalance,
         hideIncome = uiState.hideIncome,
         progressState = uiState.progressState,
@@ -114,6 +117,15 @@ fun BoxWithConstraintsScope.SettingsScreen() {
         },
         onSetShowNotifications = {
             viewModel.onEvent(SettingsEvent.SetShowNotifications(it))
+        },
+        onSetShowHelpfulTips = {
+            viewModel.onEvent(SettingsEvent.SetShowHelpfulTips(it))
+        },
+        onSetShowBudgetWarnings = {
+            viewModel.onEvent(SettingsEvent.SetShowBudgetWarnings(it))
+        },
+        onSetShowPlannedPaymentReminders = {
+            viewModel.onEvent(SettingsEvent.SetShowPlannedPaymentReminders(it))
         },
         onSetHideCurrentBalance = {
             viewModel.onEvent(SettingsEvent.SetHideCurrentBalance(it))
@@ -152,6 +164,9 @@ private fun BoxWithConstraintsScope.UI(
     onSetCurrency: (String) -> Unit,
     startDateOfMonth: Int = 1,
     showNotifications: Boolean = true,
+    showHelpfulTips: Boolean = true,
+    showBudgetWarnings: Boolean = true,
+    showPlannedPaymentReminders: Boolean = true,
     hideCurrentBalance: Boolean = false,
     hideIncome: Boolean = false,
     progressState: Boolean = false,
@@ -161,6 +176,9 @@ private fun BoxWithConstraintsScope.UI(
     onExportToCSV: () -> Unit = {},
     onSetLockApp: (Boolean) -> Unit = {},
     onSetShowNotifications: (Boolean) -> Unit = {},
+    onSetShowHelpfulTips: (Boolean) -> Unit = {},
+    onSetShowBudgetWarnings: (Boolean) -> Unit = {},
+    onSetShowPlannedPaymentReminders: (Boolean) -> Unit = {},
     onSetTreatTransfersAsIncExp: (Boolean) -> Unit = {},
     onSetHideCurrentBalance: (Boolean) -> Unit = {},
     onSetHideIncome: (Boolean) -> Unit = {},
@@ -343,6 +361,36 @@ private fun BoxWithConstraintsScope.UI(
                 onSetLockApp = onSetShowNotifications,
                 text = stringResource(R.string.show_notifications),
                 icon = R.drawable.ic_notification_m
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showHelpfulTips,
+                onSetLockApp = onSetShowHelpfulTips,
+                text = stringResource(R.string.show_helpful_tips),
+                description = stringResource(R.string.show_helpful_tips_description),
+                icon = R.drawable.ic_custom_atom_m
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showBudgetWarnings,
+                onSetLockApp = onSetShowBudgetWarnings,
+                text = stringResource(R.string.show_budget_warnings),
+                description = stringResource(R.string.show_budget_warnings_description),
+                icon = R.drawable.ic_custom_bills_m
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showPlannedPaymentReminders,
+                onSetLockApp = onSetShowPlannedPaymentReminders,
+                text = stringResource(R.string.show_planned_payment_reminders),
+                description = stringResource(R.string.show_planned_payment_reminders_description),
+                icon = R.drawable.ic_planned_payments
             )
 
             Spacer(Modifier.height(12.dp))

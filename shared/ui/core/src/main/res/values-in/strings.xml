@@ -397,6 +397,12 @@
     <string name="plo_empty_set_starting_balance">Set your starting balance</string>
     <string name="plo_empty_add_first_transaction">Add first transaction</string>
     <string name="plo_empty_create_main_categories">Create main categories</string>
+    <string name="show_helpful_tips">Show helpful tips</string>
+    <string name="show_helpful_tips_description">Surface small product tips and shortcuts on Home.</string>
+    <string name="show_budget_warnings">Show budget warnings</string>
+    <string name="show_budget_warnings_description">Show alerts when goals or limits need attention.</string>
+    <string name="show_planned_payment_reminders">Show planned payment reminders</string>
+    <string name="show_planned_payment_reminders_description">Show reminders for upcoming or overdue planned payments.</string>
     <string name="widget_description">Plo memiliki widget keren yang memungkinkan Anda menambahkan transaksi PENDAPATAN/PENGELUARAN/PENYALURAN dengan 1 klik dari beranda Anda\n\nCatatan: Jika tombol "Tambah widget" tidak berfungsi, tambahkan secara manual dari menu widget peluncur Anda.</string>
     <string name="add_widget">Tambahkan widget</string>
     <string name="set_a_budget">Tetapkan anggaran</string>

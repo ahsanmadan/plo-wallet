@@ -25,6 +25,9 @@ class SharedPrefs @Inject constructor(
         const val HIDE_CURRENT_BALANCE = "hide_current_balance"
         const val HIDE_INCOME = "hide_income"
         const val TRANSFERS_AS_INCOME_EXPENSE = "transfers_as_inc_exp"
+        const val SHOW_HELPFUL_TIPS = "show_helpful_tips"
+        const val SHOW_BUDGET_WARNINGS = "show_budget_warnings"
+        const val SHOW_PLANNED_PAYMENT_REMINDERS = "show_planned_payment_reminders"
         // ----------------------------- App Settings -----------------------------------------------
 
         // -------------------------------- Customer Journey ----------------------------------------

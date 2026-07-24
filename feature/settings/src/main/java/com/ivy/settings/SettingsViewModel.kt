@@ -65,6 +65,9 @@ class SettingsViewModel @Inject constructor(
     private val currentTheme = mutableStateOf<Theme>(Theme.AUTO)
     private val lockApp = mutableStateOf(false)
     private val showNotifications = mutableStateOf(true)
+    private val showHelpfulTips = mutableStateOf(true)
+    private val showBudgetWarnings = mutableStateOf(true)
+    private val showPlannedPaymentReminders = mutableStateOf(true)
     private val hideCurrentBalance = mutableStateOf(false)
     private val hideIncome = mutableStateOf(false)
     private val treatTransfersAsIncomeExpense = mutableStateOf(false)
@@ -83,6 +86,9 @@ class SettingsViewModel @Inject constructor(
             currentTheme = getCurrentTheme(),
             lockApp = getLockApp(),
             showNotifications = getShowNotifications(),
+            showHelpfulTips = getShowHelpfulTips(),
+            showBudgetWarnings = getShowBudgetWarnings(),
+            showPlannedPaymentReminders = getShowPlannedPaymentReminders(),
             hideCurrentBalance = getHideCurrentBalance(),
             treatTransfersAsIncomeExpense = getTreatTransfersAsIncomeExpense(),
             startDateOfMonth = getStartDateOfMonth(),
@@ -98,6 +104,9 @@ class SettingsViewModel @Inject constructor(
         initializeCurrentTheme()
         initializeLockApp()
         initializeShowNotifications()
+        initializeShowHelpfulTips()
+        initializeShowBudgetWarnings()
+        initializeShowPlannedPaymentReminders()
         initializeHideCurrentBalance()
         initializeHideIncome()
         initializeTransfersAsIncomeExpense()
@@ -131,6 +140,24 @@ class SettingsViewModel @Inject constructor(
     private fun initializeShowNotifications() {
         showNotifications.value = sharedPrefs.getBoolean(
             SharedPrefs.SHOW_NOTIFICATIONS, true
+        )
+    }
+
+    private fun initializeShowHelpfulTips() {
+        showHelpfulTips.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_HELPFUL_TIPS, true
+        )
+    }
+
+    private fun initializeShowBudgetWarnings() {
+        showBudgetWarnings.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_BUDGET_WARNINGS, true
+        )
+    }
+
+    private fun initializeShowPlannedPaymentReminders() {
+        showPlannedPaymentReminders.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, true
         )
     }
 
@@ -179,6 +206,21 @@ class SettingsViewModel @Inject constructor(
     }
 
     @Composable
+    private fun getShowHelpfulTips(): Boolean {
+        return showHelpfulTips.value
+    }
+
+    @Composable
+    private fun getShowBudgetWarnings(): Boolean {
+        return showBudgetWarnings.value
+    }
+
+    @Composable
+    private fun getShowPlannedPaymentReminders(): Boolean {
+        return showPlannedPaymentReminders.value
+    }
+
+    @Composable
     private fun getHideCurrentBalance(): Boolean {
         return hideCurrentBalance.value
     }
@@ -216,6 +258,11 @@ class SettingsViewModel @Inject constructor(
             SettingsEvent.SwitchTheme -> switchTheme()
             is SettingsEvent.SetLockApp -> setLockApp(event.lockApp)
             is SettingsEvent.SetShowNotifications -> setShowNotifications(event.showNotifications)
+            is SettingsEvent.SetShowHelpfulTips -> setShowHelpfulTips(event.showHelpfulTips)
+            is SettingsEvent.SetShowBudgetWarnings -> setShowBudgetWarnings(event.showBudgetWarnings)
+            is SettingsEvent.SetShowPlannedPaymentReminders -> setShowPlannedPaymentReminders(
+                event.showPlannedPaymentReminders
+            )
             is SettingsEvent.SetHideCurrentBalance -> setHideCurrentBalance(
                 event.hideCurrentBalance
             )
@@ -332,6 +379,30 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             sharedPrefs.putBoolean(SharedPrefs.SHOW_NOTIFICATIONS, notificationsShow)
+        }
+    }
+
+    private fun setShowHelpfulTips(show: Boolean) {
+        showHelpfulTips.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_HELPFUL_TIPS, show)
+        }
+    }
+
+    private fun setShowBudgetWarnings(show: Boolean) {
+        showBudgetWarnings.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_BUDGET_WARNINGS, show)
+        }
+    }
+
+    private fun setShowPlannedPaymentReminders(show: Boolean) {
+        showPlannedPaymentReminders.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, show)
         }
     }
 

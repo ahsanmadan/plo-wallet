@@ -15,6 +15,7 @@ data class CustomerJourneyCardModel(
     @Suppress("MaximumLineLength", "ParameterWrapping", "MaxLineLength", "ParameterListWrapping")
     val condition: suspend (trnCount: Long, plannedPaymentsCount: Long, ivyContext: IvyWalletCtx, deps: CustomerJourneyDeps) -> Boolean,
     val alertType: PloAlertType = PloAlertType.TIP,
+    val alertCategory: PloAlertCategory = PloAlertCategory.HELPFUL_TIP,
     val title: String,
     val description: String,
     val cta: String?,
@@ -37,4 +38,11 @@ enum class PloAlertType(val priority: Int) {
     REMINDER(3),
     INSIGHT(2),
     TIP(1),
+}
+
+enum class PloAlertCategory {
+    ESSENTIAL,
+    HELPFUL_TIP,
+    BUDGET_WARNING,
+    PLANNED_PAYMENT_REMINDER,
 }

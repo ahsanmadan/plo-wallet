@@ -46,7 +46,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
           plannedPaymentsCount,
           ivyContext,
           deps
-        ) && !isCardDismissed(it) && !isCardSnoozed(it)
+        ) && !isCardDismissed(it) && !isCardSnoozed(it) && isCardEnabledBySettings(it)
       }
       .sortedByDescending { it.alertType.priority }
   }
@@ -69,6 +69,24 @@ class CustomerJourneyCardsProvider @Inject constructor(
   private fun isCardSnoozed(cardData: CustomerJourneyCardModel): Boolean {
     val snoozedUntil = sharedPrefs.getLong(snoozeSharedPrefsKey(cardData), 0L)
     return snoozedUntil > timeProvider.utcNow().toEpochMilli()
+  }
+
+  private fun isCardEnabledBySettings(cardData: CustomerJourneyCardModel): Boolean {
+    return when (cardData.alertCategory) {
+      PloAlertCategory.ESSENTIAL -> true
+      PloAlertCategory.HELPFUL_TIP -> sharedPrefs.getBoolean(
+        SharedPrefs.SHOW_HELPFUL_TIPS,
+        true
+      )
+      PloAlertCategory.BUDGET_WARNING -> sharedPrefs.getBoolean(
+        SharedPrefs.SHOW_BUDGET_WARNINGS,
+        true
+      )
+      PloAlertCategory.PLANNED_PAYMENT_REMINDER -> sharedPrefs.getBoolean(
+        SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS,
+        true
+      )
+    }
   }
 
   private fun sharedPrefsKey(cardData: CustomerJourneyCardModel): String {
@@ -95,6 +113,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount == 0L
       },
       alertType = PloAlertType.CRITICAL,
+      alertCategory = PloAlertCategory.ESSENTIAL,
       title = stringRes(R.string.home_alert_set_starting_balance),
       description = stringRes(R.string.home_alert_set_starting_balance_description),
       cta = stringRes(R.string.to_accounts),
@@ -112,6 +131,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 1 && plannedPaymentCount == 0L
       },
       alertType = PloAlertType.REMINDER,
+      alertCategory = PloAlertCategory.PLANNED_PAYMENT_REMINDER,
       title = stringRes(R.string.home_alert_plan_upcoming_payments),
       description = stringRes(R.string.home_alert_plan_upcoming_payments_description),
       cta = stringRes(R.string.add_planned_payment),
@@ -134,6 +154,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 3
       },
       alertType = PloAlertType.TIP,
+      alertCategory = PloAlertCategory.HELPFUL_TIP,
       title = stringRes(R.string.home_alert_add_transactions_faster),
       description = stringRes(R.string.home_alert_add_transactions_faster_description),
       cta = stringRes(R.string.add_widget),
@@ -151,6 +172,7 @@ class CustomerJourneyCardsProvider @Inject constructor(
         trnCount >= 7
       },
       alertType = PloAlertType.INSIGHT,
+      alertCategory = PloAlertCategory.HELPFUL_TIP,
       title = stringRes(R.string.home_alert_review_spending_by_category),
       description = stringRes(R.string.home_alert_review_spending_by_category_description),
       cta = stringRes(R.string.expenses_piechart),
