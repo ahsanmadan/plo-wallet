@@ -2,7 +2,7 @@
 
 ## 1. Project Overview & Tech Stack
 - **Project Name:** Plo App
-- **Description:** Aplikasi Android pencatat keuangan pribadi untuk memantau transaksi, akun, anggaran, laporan, dan pengaturan finansial harian. Project ini merupakan fork dari Ivy Wallet yang sedang di-branding ulang dan disesuaikan menjadi Plo.
+- **Description:** Aplikasi Android pencatat keuangan pribadi untuk memantau transaksi, akun, anggaran, laporan, dan pengaturan finansial harian. Project ini dikembangkan sebagai pengalaman Plo yang lokal, privat, dan cepat.
 - **Target Audience:** Pengguna Android yang ingin mengelola keuangan pribadi secara lokal, sederhana, cepat, dan privat.
 
 ### Tech Stack Approved:
@@ -39,7 +39,7 @@ Every time you generate or refactor code, you must strictly follow these structu
 - **Dependency Injection:** Inject repositories and domain dependencies into ViewModels using Hilt `@Inject` constructor injection. Never instantiate dependencies manually inside ViewModels.
 - **Error Handling:** Wrap network and database operations in established project result/error patterns. Handle UI exceptions gracefully using Snackbar or visual error states that match `DESIGN.md`.
 - **Scope Control:** Keep changes minimal and targeted. Do not rename package/applicationId because Firebase config is tied to `com.ivy.wallet` and `com.ivy.wallet.debug`.
-- **Branding Rule:** User-facing app branding should say `Plo` or the currently requested product name. Avoid introducing new Ivy Wallet promotional cards, links, or copy unless explicitly requested.
+- **Branding Rule:** User-facing app branding should say `Plo` or the currently requested product name. Avoid introducing old promotional cards, external community links, or non-Plo copy unless explicitly requested.
 - **Device Install Workflow:** Whenever the user asks to install to the phone, uninstall the existing debug package first, then install the newly built APK.
 
 ---
