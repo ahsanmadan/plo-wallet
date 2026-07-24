@@ -1,30 +1,37 @@
 # Plo
 
-**Plo** is a personal finance Android app for tracking daily transactions, accounts, budgets, reports, loans, and planned payments.
+Plo is a privacy-first Android money tracker for people who want their finances to feel clear, local, and fast.
 
-The goal of Plo is simple: make personal money tracking feel fast, private, and clear without unnecessary distractions.
+It is built for everyday personal finance: logging transactions, checking budgets, reviewing reports, and keeping financial clutter low. The goal is simple: fewer taps, less noise, better awareness of where your money goes.
 
-## Features
+## Why Plo
 
-- **Transaction Tracking**: Record income and expenses quickly.
-- **Accounts**: Manage cash, bank, and other personal finance accounts.
-- **Budgets**: Set spending limits and monitor remaining budget.
-- **Reports**: Review income, expenses, and financial patterns.
-- **Loans**: Track money owed and money lent.
-- **Planned Payments**: Keep upcoming or overdue payments visible.
-- **Multi-currency Support**: Work with multiple currencies.
-- **Dark Mode**: Use a clean interface designed for daily use.
+- **Private by default**: built around local-first usage instead of cloud-heavy friction
+- **Fast to use**: optimized for daily transaction logging, not spreadsheet cosplay
+- **Actually useful**: accounts, budgets, reports, loans, and planned payments in one app
+- **Modern Android stack**: Kotlin, Jetpack Compose, Room, Hilt
 
-## Tech Stack
+## Core features
+
+- **Transaction tracking**: record income and expenses quickly
+- **Accounts**: manage cash, bank, and other personal finance accounts
+- **Budgets**: set spending limits and monitor what is left
+- **Reports**: review income, expenses, and financial patterns
+- **Loans**: track money owed and money lent
+- **Planned payments**: keep upcoming or overdue payments visible
+- **Multi-currency support**: work with multiple currencies
+- **Dark mode**: use a clean interface designed for daily use
+
+## Tech stack
 
 - **Language**: Kotlin
 - **UI**: Jetpack Compose
-- **Architecture**: MVVM and Clean Architecture
-- **Database**: Room Database
-- **Dependency Injection**: Hilt
-- **Build System**: Gradle
+- **Architecture**: MVVM + Clean Architecture
+- **Database**: Room
+- **Dependency injection**: Hilt
+- **Build system**: Gradle
 
-## Local Development
+## Local development
 
 1. Install Android Studio.
 2. Clone this repository:
@@ -45,7 +52,7 @@ $env:Path="$env:JAVA_HOME\bin;$env:Path"
 .\gradlew.bat :app:assembleDebug --no-daemon --stacktrace
 ```
 
-## Project Docs
+## Project docs
 
 - [Agent Instructions](AGENTS.md)
 - [Design System](DESIGN.md)
