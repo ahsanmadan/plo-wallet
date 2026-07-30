@@ -132,6 +132,21 @@ class BackupDataUseCase @Inject constructor(
         hashmap[SharedPrefs.SHOW_NOTIFICATIONS] =
             sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true).toString()
 
+        hashmap[SharedPrefs.SHOW_BUDGET_WARNINGS] =
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_BUDGET_WARNINGS, true).toString()
+
+        hashmap[SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS] =
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, true).toString()
+
+        hashmap[SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS] =
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, true).toString()
+
+        hashmap[SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS] =
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS, true).toString()
+
+        hashmap[SharedPrefs.SHOW_BACKUP_REMINDERS] =
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_BACKUP_REMINDERS, true).toString()
+
         hashmap[SharedPrefs.APP_LOCK_ENABLED] =
             sharedPrefs.getBoolean(SharedPrefs.APP_LOCK_ENABLED, false).toString()
 
@@ -288,6 +303,46 @@ class BackupDataUseCase @Inject constructor(
             sharedPrefs.putBoolean(
                 SharedPrefs.SHOW_NOTIFICATIONS,
                 (completeData.sharedPrefs[SharedPrefs.SHOW_NOTIFICATIONS] ?: "true").toBoolean()
+            )
+
+            sharedPrefs.putBoolean(
+                SharedPrefs.SHOW_BUDGET_WARNINGS,
+                (
+                    completeData.sharedPrefs[SharedPrefs.SHOW_BUDGET_WARNINGS]
+                        ?: "true"
+                    ).toBoolean()
+            )
+
+            sharedPrefs.putBoolean(
+                SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS,
+                (
+                    completeData.sharedPrefs[SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS]
+                        ?: "true"
+                    ).toBoolean()
+            )
+
+            sharedPrefs.putBoolean(
+                SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS,
+                (
+                    completeData.sharedPrefs[SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS]
+                        ?: "true"
+                    ).toBoolean()
+            )
+
+            sharedPrefs.putBoolean(
+                SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS,
+                (
+                    completeData.sharedPrefs[SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS]
+                        ?: "true"
+                    ).toBoolean()
+            )
+
+            sharedPrefs.putBoolean(
+                SharedPrefs.SHOW_BACKUP_REMINDERS,
+                (
+                    completeData.sharedPrefs[SharedPrefs.SHOW_BACKUP_REMINDERS]
+                        ?: "true"
+                    ).toBoolean()
             )
 
             sharedPrefs.putBoolean(

@@ -93,6 +93,9 @@ fun BoxWithConstraintsScope.SettingsScreen() {
         showHelpfulTips = uiState.showHelpfulTips,
         showBudgetWarnings = uiState.showBudgetWarnings,
         showPlannedPaymentReminders = uiState.showPlannedPaymentReminders,
+        showDailyTransactionReminders = uiState.showDailyTransactionReminders,
+        showMonthlyReviewReminders = uiState.showMonthlyReviewReminders,
+        showBackupReminders = uiState.showBackupReminders,
         hideCurrentBalance = uiState.hideCurrentBalance,
         hideIncome = uiState.hideIncome,
         progressState = uiState.progressState,
@@ -126,6 +129,15 @@ fun BoxWithConstraintsScope.SettingsScreen() {
         },
         onSetShowPlannedPaymentReminders = {
             viewModel.onEvent(SettingsEvent.SetShowPlannedPaymentReminders(it))
+        },
+        onSetShowDailyTransactionReminders = {
+            viewModel.onEvent(SettingsEvent.SetShowDailyTransactionReminders(it))
+        },
+        onSetShowMonthlyReviewReminders = {
+            viewModel.onEvent(SettingsEvent.SetShowMonthlyReviewReminders(it))
+        },
+        onSetShowBackupReminders = {
+            viewModel.onEvent(SettingsEvent.SetShowBackupReminders(it))
         },
         onSetHideCurrentBalance = {
             viewModel.onEvent(SettingsEvent.SetHideCurrentBalance(it))
@@ -167,6 +179,9 @@ private fun BoxWithConstraintsScope.UI(
     showHelpfulTips: Boolean = true,
     showBudgetWarnings: Boolean = true,
     showPlannedPaymentReminders: Boolean = true,
+    showDailyTransactionReminders: Boolean = true,
+    showMonthlyReviewReminders: Boolean = true,
+    showBackupReminders: Boolean = true,
     hideCurrentBalance: Boolean = false,
     hideIncome: Boolean = false,
     progressState: Boolean = false,
@@ -179,6 +194,9 @@ private fun BoxWithConstraintsScope.UI(
     onSetShowHelpfulTips: (Boolean) -> Unit = {},
     onSetShowBudgetWarnings: (Boolean) -> Unit = {},
     onSetShowPlannedPaymentReminders: (Boolean) -> Unit = {},
+    onSetShowDailyTransactionReminders: (Boolean) -> Unit = {},
+    onSetShowMonthlyReviewReminders: (Boolean) -> Unit = {},
+    onSetShowBackupReminders: (Boolean) -> Unit = {},
     onSetTreatTransfersAsIncExp: (Boolean) -> Unit = {},
     onSetHideCurrentBalance: (Boolean) -> Unit = {},
     onSetHideIncome: (Boolean) -> Unit = {},
@@ -391,6 +409,36 @@ private fun BoxWithConstraintsScope.UI(
                 text = stringResource(R.string.show_planned_payment_reminders),
                 description = stringResource(R.string.show_planned_payment_reminders_description),
                 icon = R.drawable.ic_planned_payments
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showDailyTransactionReminders,
+                onSetLockApp = onSetShowDailyTransactionReminders,
+                text = stringResource(R.string.show_daily_transaction_reminders),
+                description = stringResource(R.string.show_daily_transaction_reminders_description),
+                icon = R.drawable.ic_notransactions
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showMonthlyReviewReminders,
+                onSetLockApp = onSetShowMonthlyReviewReminders,
+                text = stringResource(R.string.show_monthly_review_reminders),
+                description = stringResource(R.string.show_monthly_review_reminders_description),
+                icon = R.drawable.ic_vue_chart_graph
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            AppSwitch(
+                lockApp = showBackupReminders,
+                onSetLockApp = onSetShowBackupReminders,
+                text = stringResource(R.string.show_backup_reminders),
+                description = stringResource(R.string.show_backup_reminders_description),
+                icon = R.drawable.ic_vue_files_folder_cloud
             )
 
             Spacer(Modifier.height(12.dp))

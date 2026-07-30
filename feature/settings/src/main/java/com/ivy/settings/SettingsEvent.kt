@@ -15,6 +15,14 @@ sealed interface SettingsEvent {
     data class SetShowPlannedPaymentReminders(val showPlannedPaymentReminders: Boolean) :
         SettingsEvent
 
+    data class SetShowDailyTransactionReminders(val showDailyTransactionReminders: Boolean) :
+        SettingsEvent
+
+    data class SetShowMonthlyReviewReminders(val showMonthlyReviewReminders: Boolean) :
+        SettingsEvent
+
+    data class SetShowBackupReminders(val showBackupReminders: Boolean) : SettingsEvent
+
     data class SetHideCurrentBalance(val hideCurrentBalance: Boolean) : SettingsEvent
     data class SetHideIncome(val hideIncome: Boolean) : SettingsEvent
     data class SetTransfersAsIncomeExpense(val treatTransfersAsIncomeExpense: Boolean) :

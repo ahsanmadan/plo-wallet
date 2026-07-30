@@ -68,6 +68,9 @@ class SettingsViewModel @Inject constructor(
     private val showHelpfulTips = mutableStateOf(true)
     private val showBudgetWarnings = mutableStateOf(true)
     private val showPlannedPaymentReminders = mutableStateOf(true)
+    private val showDailyTransactionReminders = mutableStateOf(true)
+    private val showMonthlyReviewReminders = mutableStateOf(true)
+    private val showBackupReminders = mutableStateOf(true)
     private val hideCurrentBalance = mutableStateOf(false)
     private val hideIncome = mutableStateOf(false)
     private val treatTransfersAsIncomeExpense = mutableStateOf(false)
@@ -89,6 +92,9 @@ class SettingsViewModel @Inject constructor(
             showHelpfulTips = getShowHelpfulTips(),
             showBudgetWarnings = getShowBudgetWarnings(),
             showPlannedPaymentReminders = getShowPlannedPaymentReminders(),
+            showDailyTransactionReminders = getShowDailyTransactionReminders(),
+            showMonthlyReviewReminders = getShowMonthlyReviewReminders(),
+            showBackupReminders = getShowBackupReminders(),
             hideCurrentBalance = getHideCurrentBalance(),
             treatTransfersAsIncomeExpense = getTreatTransfersAsIncomeExpense(),
             startDateOfMonth = getStartDateOfMonth(),
@@ -107,6 +113,9 @@ class SettingsViewModel @Inject constructor(
         initializeShowHelpfulTips()
         initializeShowBudgetWarnings()
         initializeShowPlannedPaymentReminders()
+        initializeShowDailyTransactionReminders()
+        initializeShowMonthlyReviewReminders()
+        initializeShowBackupReminders()
         initializeHideCurrentBalance()
         initializeHideIncome()
         initializeTransfersAsIncomeExpense()
@@ -158,6 +167,24 @@ class SettingsViewModel @Inject constructor(
     private fun initializeShowPlannedPaymentReminders() {
         showPlannedPaymentReminders.value = sharedPrefs.getBoolean(
             SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, true
+        )
+    }
+
+    private fun initializeShowDailyTransactionReminders() {
+        showDailyTransactionReminders.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, true
+        )
+    }
+
+    private fun initializeShowMonthlyReviewReminders() {
+        showMonthlyReviewReminders.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS, true
+        )
+    }
+
+    private fun initializeShowBackupReminders() {
+        showBackupReminders.value = sharedPrefs.getBoolean(
+            SharedPrefs.SHOW_BACKUP_REMINDERS, true
         )
     }
 
@@ -221,6 +248,21 @@ class SettingsViewModel @Inject constructor(
     }
 
     @Composable
+    private fun getShowDailyTransactionReminders(): Boolean {
+        return showDailyTransactionReminders.value
+    }
+
+    @Composable
+    private fun getShowMonthlyReviewReminders(): Boolean {
+        return showMonthlyReviewReminders.value
+    }
+
+    @Composable
+    private fun getShowBackupReminders(): Boolean {
+        return showBackupReminders.value
+    }
+
+    @Composable
     private fun getHideCurrentBalance(): Boolean {
         return hideCurrentBalance.value
     }
@@ -263,6 +305,19 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.SetShowPlannedPaymentReminders -> setShowPlannedPaymentReminders(
                 event.showPlannedPaymentReminders
             )
+
+            is SettingsEvent.SetShowDailyTransactionReminders -> setShowDailyTransactionReminders(
+                event.showDailyTransactionReminders
+            )
+
+            is SettingsEvent.SetShowMonthlyReviewReminders -> setShowMonthlyReviewReminders(
+                event.showMonthlyReviewReminders
+            )
+
+            is SettingsEvent.SetShowBackupReminders -> setShowBackupReminders(
+                event.showBackupReminders
+            )
+
             is SettingsEvent.SetHideCurrentBalance -> setHideCurrentBalance(
                 event.hideCurrentBalance
             )
@@ -403,6 +458,30 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             sharedPrefs.putBoolean(SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, show)
+        }
+    }
+
+    private fun setShowDailyTransactionReminders(show: Boolean) {
+        showDailyTransactionReminders.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, show)
+        }
+    }
+
+    private fun setShowMonthlyReviewReminders(show: Boolean) {
+        showMonthlyReviewReminders.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS, show)
+        }
+    }
+
+    private fun setShowBackupReminders(show: Boolean) {
+        showBackupReminders.value = show
+
+        viewModelScope.launch {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_BACKUP_REMINDERS, show)
         }
     }
 

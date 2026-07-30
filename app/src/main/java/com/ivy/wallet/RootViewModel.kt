@@ -53,6 +53,9 @@ class RootViewModel @Inject constructor(
     private val _appLocked = MutableStateFlow<Boolean?>(null)
     val appLocked = _appLocked.readOnly()
 
+    private val _showNotificationPermissionPrompt = MutableStateFlow(false)
+    val showNotificationPermissionPrompt = _showNotificationPermissionPrompt.readOnly()
+
     fun start(systemDarkMode: Boolean, intent: Intent) {
         viewModelScope.launch {
             TestIdlingResource.increment()
@@ -81,6 +84,8 @@ class RootViewModel @Inject constructor(
                 } else {
                     nav.navigateTo(OnboardingScreen)
                 }
+
+                _showNotificationPermissionPrompt.value = shouldShowNotificationPermissionPrompt()
             }
 
             TestIdlingResource.decrement()
@@ -143,6 +148,36 @@ class RootViewModel @Inject constructor(
 
     private fun isOnboardingCompleted(): Boolean {
         return sharedPrefs.getBoolean(SharedPrefs.ONBOARDING_COMPLETED, false)
+    }
+
+    private fun shouldShowNotificationPermissionPrompt(): Boolean {
+        return !sharedPrefs.getBoolean(
+            SharedPrefs.NOTIFICATION_PERMISSION_PROMPT_HANDLED,
+            false
+        ) && sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true)
+    }
+
+    fun enableNotificationsFromFirstLaunchPrompt() {
+        sharedPrefs.putBoolean(SharedPrefs.NOTIFICATION_PERMISSION_PROMPT_HANDLED, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_BUDGET_WARNINGS, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_PLANNED_PAYMENT_REMINDERS, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_MONTHLY_REVIEW_REMINDERS, true)
+        sharedPrefs.putBoolean(SharedPrefs.SHOW_BACKUP_REMINDERS, true)
+        _showNotificationPermissionPrompt.value = false
+        transactionReminderLogic.scheduleReminder()
+    }
+
+    fun dismissNotificationPermissionPrompt() {
+        sharedPrefs.putBoolean(SharedPrefs.NOTIFICATION_PERMISSION_PROMPT_HANDLED, true)
+        _showNotificationPermissionPrompt.value = false
+    }
+
+    fun onNotificationPermissionResult(granted: Boolean) {
+        if (!granted) {
+            sharedPrefs.putBoolean(SharedPrefs.SHOW_NOTIFICATIONS, false)
+        }
     }
 
     // App Lock & UserInactivity --------------------------------------------------------------------

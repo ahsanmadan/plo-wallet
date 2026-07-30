@@ -419,6 +419,16 @@
     <string name="show_budget_warnings_description">Show alerts when goals or limits need attention.</string>
     <string name="show_planned_payment_reminders">Show planned payment reminders</string>
     <string name="show_planned_payment_reminders_description">Show reminders for upcoming or overdue planned payments.</string>
+    <string name="show_daily_transaction_reminders">Show daily transaction reminders</string>
+    <string name="show_daily_transaction_reminders_description">Get a quiet reminder to record today\'s spending.</string>
+    <string name="show_monthly_review_reminders">Show monthly review reminders</string>
+    <string name="show_monthly_review_reminders_description">Get a summary reminder when a new monthly review is ready.</string>
+    <string name="show_backup_reminders">Show backup reminders</string>
+    <string name="show_backup_reminders_description">Get occasional reminders to back up your local Plo data.</string>
+    <string name="notification_permission_prompt_title">Stay ahead of bills and budgets</string>
+    <string name="notification_permission_prompt_body">Plo can remind you about planned payments, overdue bills, budget limits, monthly reviews, transaction check-ins, and local backups.</string>
+    <string name="notification_permission_prompt_enable">Enable notifications</string>
+    <string name="notification_permission_prompt_later">Maybe later</string>
     <string name="widget_description">Plo offers a convenient widget that allows you to add transactions with just one tap from your home screen.\n\nNote: If the "Add widget" button isn\’t working, please add it manually from your launcher\’s widgets menu.</string>
     <string name="add_widget">Add widget</string>
     <string name="set_a_budget">Set a budget</string>

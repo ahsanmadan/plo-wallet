@@ -68,5 +68,6 @@ class TransactionReminderLogic @Inject constructor(
     }
 
     private fun fetchShowNotifications(): Boolean =
-        sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true)
+        sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true) &&
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, true)
 }

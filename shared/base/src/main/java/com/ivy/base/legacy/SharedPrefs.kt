@@ -25,9 +25,14 @@ class SharedPrefs @Inject constructor(
         const val HIDE_CURRENT_BALANCE = "hide_current_balance"
         const val HIDE_INCOME = "hide_income"
         const val TRANSFERS_AS_INCOME_EXPENSE = "transfers_as_inc_exp"
+        const val NOTIFICATION_PERMISSION_PROMPT_HANDLED =
+            "notification_permission_prompt_handled"
         const val SHOW_HELPFUL_TIPS = "show_helpful_tips"
         const val SHOW_BUDGET_WARNINGS = "show_budget_warnings"
         const val SHOW_PLANNED_PAYMENT_REMINDERS = "show_planned_payment_reminders"
+        const val SHOW_DAILY_TRANSACTION_REMINDERS = "show_daily_transaction_reminders"
+        const val SHOW_MONTHLY_REVIEW_REMINDERS = "show_monthly_review_reminders"
+        const val SHOW_BACKUP_REMINDERS = "show_backup_reminders"
         // ----------------------------- App Settings -----------------------------------------------
 
         // -------------------------------- Customer Journey ----------------------------------------

@@ -1,9 +1,12 @@
 package com.ivy.wallet
 
+import android.Manifest
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -13,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -20,9 +24,15 @@ import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -89,6 +99,8 @@ class RootActivity : AppCompatActivity(), RootScreen {
     private lateinit var openFileLauncher: ActivityResultLauncher<Unit>
     private lateinit var onFileOpened: (fileUri: Uri) -> Unit
 
+    private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
+
     private val viewModel: RootViewModel by viewModels()
 
     @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -105,6 +117,8 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
 
             val appLocked by viewModel.appLocked.collectAsState()
+            val showNotificationPermissionPrompt by
+                viewModel.showNotificationPermissionPrompt.collectAsState()
             when (appLocked) {
                 null -> { // display nothing
                 }
@@ -139,6 +153,16 @@ class RootActivity : AppCompatActivity(), RootScreen {
                         ) {
                             IvyNavGraph(screen)
                         }
+                    }
+
+                    if (showNotificationPermissionPrompt) {
+                        NotificationPermissionPrompt(
+                            onEnable = {
+                                viewModel.enableNotificationsFromFirstLaunchPrompt()
+                                requestNotificationPermissionIfNeeded()
+                            },
+                            onMaybeLater = viewModel::dismissNotificationPermissionPrompt
+                        )
                     }
                 }
             }
@@ -240,10 +264,55 @@ class RootActivity : AppCompatActivity(), RootScreen {
         }
     }
 
+    @Composable
+    private fun NotificationPermissionPrompt(
+        onEnable: () -> Unit,
+        onMaybeLater: () -> Unit
+    ) {
+        AlertDialog(
+            onDismissRequest = onMaybeLater,
+            title = {
+                Text(text = stringResource(R.string.notification_permission_prompt_title))
+            },
+            text = {
+                Text(text = stringResource(R.string.notification_permission_prompt_body))
+            },
+            confirmButton = {
+                Button(onClick = onEnable) {
+                    Text(text = stringResource(R.string.notification_permission_prompt_enable))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onMaybeLater) {
+                    Text(text = stringResource(R.string.notification_permission_prompt_later))
+                }
+            }
+        )
+    }
+
     private fun setupActivityForResultLaunchers() {
         createFileLauncher()
 
         openFileLauncher()
+
+        notificationPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            viewModel.onNotificationPermissionResult(granted)
+        }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+        val alreadyGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!alreadyGranted) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun createFileLauncher() {

@@ -56,7 +56,7 @@ class TransactionReminderWorker @AssistedInject constructor(
                     channel = IvyNotificationChannel.TRANSACTION_REMINDER,
                     priority = NotificationCompat.PRIORITY_HIGH
                 )
-                .setContentTitle("Ivy Wallet")
+                .setContentTitle("Plo")
                 .setContentText(randomText())
                 .setContentIntent(
                     PendingIntent.getActivity(
@@ -82,5 +82,6 @@ class TransactionReminderWorker @AssistedInject constructor(
         ).shuffled().first()
 
     private fun fetchShowNotifications(): Boolean =
-        sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true)
+        sharedPrefs.getBoolean(SharedPrefs.SHOW_NOTIFICATIONS, true) &&
+            sharedPrefs.getBoolean(SharedPrefs.SHOW_DAILY_TRANSACTION_REMINDERS, true)
 }
